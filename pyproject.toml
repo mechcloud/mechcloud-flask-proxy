@@ -1,0 +1,7 @@
+[project]
+name = "mechcloud-flask-proxy"
+version = "0.1.0"
+description = "A https proxy for public/private APIs. Handles CORS too."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
