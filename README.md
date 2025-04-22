@@ -9,10 +9,10 @@ A simple Python based proxy server built with Flask, supporting CORS and TLS. It
 - **All IPs**: Listens on all network interfaces.
 
 ## Prerequisites
-uv: A fast Python package and project manager (install instructions below).
+uv: A fast Python package and project manager (installation instructions below).
 
 ## Setup Instructions
-Follow instructions from official docs - https://docs.astral.sh/uv/getting-started/installation
+Install uv using instructions from official docs - https://docs.astral.sh/uv/getting-started/installation
 
 ## Running proxy
 ### Clone repository
@@ -24,8 +24,9 @@ git clone git@github.com:mechcloud/mechcloud-flask-proxy.git
 ```
 cd mechcloud-flask-proxy
 
-uv .venv
-source .venv/bin/activate
+uv venv
+source .venv/bin/activate (non windows)
+.venv\Scripts\activate (windows)
 uv sync
 
 uv run app.py
@@ -35,8 +36,8 @@ uv run app.py
 You can now access the proxy at `https://localhost:6443` url.
 
 ## Defining a route to a proxied api (make sure to restart after applying changes)
-### Public API
-You can use following configuration to route requests to a (local) public API -
+### Unsecured API
+You can use following configuration to route requests to a (local) unsecured API -
 ```yaml
 /minikube/:
   url: http://127.0.0.1:8001/
