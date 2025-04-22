@@ -3,6 +3,8 @@ from flask_cors import CORS
 import requests
 import logging
 from urllib.parse import urljoin
+import yaml
+import os
 
 app = Flask(__name__)
 # Enable CORS for a single host
@@ -16,12 +18,29 @@ CORS(
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Proxy mappings: URI to {url, optional token}
-PROXY_MAPPINGS = {
-   '/minikube/': {
-      'url': 'http://127.0.0.1:8001/',
-   }
-}
+# Load proxy mappings from YAML file
+def load_proxy_mappings():
+    try:
+        yaml_file_path = os.path.join(os.path.dirname(__file__), 'proxy.yaml')
+        with open(yaml_file_path, 'r') as file:
+            mappings = yaml.safe_load(file)
+            # Ensure mappings is a dictionary
+            if not isinstance(mappings, dict):
+                logger.error("Invalid proxy.yaml format: root must be a mapping")
+                return {}
+            return mappings
+    except FileNotFoundError:
+        logger.error("proxy.yaml file not found")
+        return {}
+    except yaml.YAMLError as e:
+        logger.error(f"Error parsing proxy.yaml: {str(e)}")
+        return {}
+    except Exception as e:
+        logger.error(f"Unexpected error loading proxy.yaml: {str(e)}")
+        return {}
+
+# Load mappings at startup
+PROXY_MAPPINGS = load_proxy_mappings()
 
 @app.route('/')
 def home():
@@ -89,3 +108,4 @@ def proxy(path):
 if __name__ == '__main__':
     # Listen on all IPs (0.0.0.0) and enable TLS with ad-hoc self-signed certificate
     app.run(host='0.0.0.0', port=6443, debug=True, ssl_context='adhoc')
+
